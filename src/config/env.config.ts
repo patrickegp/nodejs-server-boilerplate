@@ -28,6 +28,7 @@ interface MysqlConfig {
 
 interface SmtpConfig {
   host: string;
+  port: number;
   user: string;
   password: string;
 }
@@ -70,6 +71,7 @@ const loadConfig = (): Config => {
     },
     smtp: {
       host: getEnvVariable('SMTP_HOST', ''),
+      port: parseInt(getEnvVariable('SMTP_PORT', '0'), 10),
       user: getEnvVariable('SMTP_USER', ''),
       password: getEnvVariable('SMTP_PASSWORD', '')
     }

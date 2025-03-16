@@ -8,6 +8,6 @@ export const logger = winston.createLogger({
   ),
   transports: [
     new winston.transports.Console(),
-    new winston.transports.File({ filename: 'logs/authentication.log' }),
+    new winston.transports.File({ filename: 'logs/error.log' }),
   ],
 });

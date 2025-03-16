@@ -9,6 +9,7 @@ interface AppConfig {
   name: string;
   port: number;
   origins: string;
+  email: string;
 }
 
 interface JwtConfig {
@@ -54,7 +55,8 @@ const loadConfig = (): Config => {
     app: {
       name: getEnvVariable('APP_NAME', 'NodeJS Starter'),
       port: parseInt(getEnvVariable('APP_PORT', '8080'), 10),
-      origins: getEnvVariable('APP_ORIGINS', 'http://localhost:5173')
+      origins: getEnvVariable('APP_ORIGINS', 'http://localhost:5173'),
+      email: getEnvVariable('APP_EMAIL', 'noreply@gesystec.com')
     },
     jwt: {
       accessKey: getEnvVariable('JWT_ACCESS_KEY', 'default-access-key'),

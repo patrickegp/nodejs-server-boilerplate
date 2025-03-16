@@ -63,3 +63,13 @@ export const sessionsTable = mysqlTable("sessions", {
   token: varchar("session_token", { length: 255 }).notNull(),
   idUser: int("id_user").references(() => usersTable.id),
 });
+
+export const customersTable = mysqlTable('customers', {
+  id: int("customer_id").primaryKey().autoincrement(),
+  created: datetime("customer_created", { mode: "date" }).notNull().default(sql`CURRENT_TIMESTAMP`),
+  updated: datetime("customer_updated", { mode: "date" }).notNull().default(sql`CURRENT_TIMESTAMP`),
+  deleted: datetime("customer_deleted", { mode: "date" }).default(sql`NULL`),
+  fullname: varchar("customer_fullname", { length: 255 }).notNull(),
+  email: varchar("customer_email", { length: 255 }).notNull().unique(),
+  idStatus: tinyint("id_status").default(0),
+});

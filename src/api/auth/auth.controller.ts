@@ -58,12 +58,11 @@ export const recoverPassword = async (req: Request, res: Response) => {
     const resetToken = generateResetToken();
     const [ result ] = await insertResetToken(resetToken, user.id);
 
-    const from: string = "info@gesystec.com";
     const to: string = user.email;
     const subject: string = "Recuperación de contraseña";
 
     const resetLink =  `https://localhost:3000/password/reset?=${resetToken}`;
-    await sendMail( from, to, subject, 'password-reset-request', { resetLink });
+    await sendMail( to, subject, 'password-reset-request', { resetLink });
 
     res.json({
       data: { email },
@@ -93,16 +92,16 @@ export const resetPassword = async (req: Request, res: Response) => {
     const [ updated ]  = await setUserPassword(user.idUser!, hashedPassword );
 
     if(updated.affectedRows > 0){
+      
       deleteUserResetTokens(user.idUser!);
 
-      const from: string = "info@gesystec.com";
       const to: string = user.email;
       const subject: string = "Contraseña modificada";
       const emailVariables = {
         supportUrl: `https://localhost:3000/contact`,
         fullname: user.fullname
       };
-      await sendMail( from, to, subject, 'password-reset-succeed', emailVariables);
+      await sendMail( to, subject, 'password-reset-succeed', emailVariables);
 
       res.json({
         data: {fullname: user.fullname},
@@ -131,14 +130,13 @@ export const userRegistration = async (req: Request, res: Response) => {
   try {
     const hashedPassword = await hashPassword(password);
 
-    const from: string = "info@gesystec.com";
     const to: string = email;
     const subject: string = "Bienvenido";
     const emailVariables = {
       appUrl: `https://localhost:3000/`,
       fullname: fullname
     };
-    await sendMail( from, to, subject, 'register', emailVariables);
+    await sendMail( to, subject, 'register', emailVariables);
     res.json({
       data: {fullname, mobile, email, hashedPassword},
       message: "En hora buena, ya estas registrado"

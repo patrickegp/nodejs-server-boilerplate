@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import crypto from "node:crypto";
 import { authenticate, deleteUserResetTokens, getUserResetToken, insertResetToken, setUserPassword } from "./auth.service";
 import { getUserByEmail, getUserPermissions } from "../users/users.service";
 import { Permission } from "../../types/permission.types";
@@ -7,6 +6,7 @@ import { AuthUser } from "../../types/auth.types";
 import { generateAccessToken } from "../../helpers/auth.helper";
 import { sendMail } from "../../services/mail.service";
 import { hashPassword } from "../../utils/password.utils";
+import { generateResetToken } from "../../utils/token.utils";
 
 export const currentSession = async (req: Request, res: Response) => {
   const session: AuthUser = {
@@ -15,7 +15,6 @@ export const currentSession = async (req: Request, res: Response) => {
     fullname: 'Patrick E. García',
     permissions: ['users:view', 'users:create', 'users:edit', 'users:delete']
   };
-
   res.json(session);
 }
 
@@ -56,8 +55,8 @@ export const recoverPassword = async (req: Request, res: Response) => {
   try {
     const user = await getUserByEmail(email);
 
-    const resetToken = crypto.randomBytes(16).toString("hex");
-    const [token] = await insertResetToken(resetToken, user.id);
+    const resetToken = generateResetToken();
+    const [ result ] = await insertResetToken(resetToken, user.id);
 
     const from: string = "info@gesystec.com";
     const to: string = user.email;
@@ -98,8 +97,7 @@ export const resetPassword = async (req: Request, res: Response) => {
 
       const from: string = "info@gesystec.com";
       const to: string = user.email;
-      const subject: string = "Recuperación de contraseña";
-      
+      const subject: string = "Contraseña modificada";
       const emailVariables = {
         supportUrl: `https://localhost:3000/contact`,
         fullname: user.fullname
@@ -127,14 +125,22 @@ export const resetPassword = async (req: Request, res: Response) => {
 
 };
 
+// PLEASE MAKE SURE YOUR MAKE YOUR CHANGES HERE
 export const userRegistration = async (req: Request, res: Response) => {
   const { fullname, email, mobile, password } = req.body;
   try {
     const hashedPassword = await hashPassword(password);
+
+    const from: string = "info@gesystec.com";
+    const to: string = email;
+    const subject: string = "Bienvenido";
+    const emailVariables = {
+      appUrl: `https://localhost:3000/`,
+      fullname: fullname
+    };
+    await sendMail( from, to, subject, 'register', emailVariables);
     res.json({
-      data: {
-        fullname, mobile, email, hashedPassword
-      },
+      data: {fullname, mobile, email, hashedPassword},
       message: "En hora buena, ya estas registrado"
     });
     

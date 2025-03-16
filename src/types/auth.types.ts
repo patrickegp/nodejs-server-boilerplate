@@ -13,7 +13,8 @@ export type AuthResetFields = {
 }
 
 export type AuthUser = {
-  userId: number;
-  userFullname: string;
-  userEmail: string;
+  id: number;
+  fullname: string;
+  email: string;
+  permissions: string[]
 }

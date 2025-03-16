@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { verifyAccessToken } from "../helpers/auth.helper";
 
-export const validateJwtToken = async (req: Request, res: Response, next: NextFunction) => {
+export const validateToken = async (req: Request, res: Response, next: NextFunction) => {
   
   const authHeader = req.header("Authorization");
   if (!authHeader) {

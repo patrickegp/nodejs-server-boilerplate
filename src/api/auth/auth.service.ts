@@ -5,15 +5,16 @@ import { AuthLoginFields, AuthUser } from "../../types/auth.types";
 import { generateAccessToken } from "../../helpers/auth.helper";
 import { comparePassword } from "../../utils/password.utils";
 import { logger } from "../../utils/logger.utils";
+import { getUserPermissions } from "../users/users.service";
+import { Permission } from "../../types/permission.types";
 
 export const registerUser = async () => {};
 
-export const authUser = async ({ email, password }: AuthLoginFields) => {
-
+export const authenticate = async ({ email, password }: AuthLoginFields) => {
   const [user] = await db
     .select()
     .from(usersTable)
-    .where(eq(usersTable.userEmail, email))
+    .where(eq(usersTable.email, email))
     .execute();
 
   if (!user) {
@@ -21,12 +22,12 @@ export const authUser = async ({ email, password }: AuthLoginFields) => {
     throw new Error("Verifique sus datos e intente de nuevo.");
   }
 
-  if(user.idStatus == 0){
+  if (user.status == 0) {
     logger.warn(`Inactive user login attempt for email: ${email}`);
     throw new Error("Lo sentimos, Su cuenta esta inactiva");
   }
 
-  const isMatch = await comparePassword(password, user.userPassword);
+  const isMatch = await comparePassword(password, user.password);
   if (!isMatch) {
     logger.warn(
       `Failed login attempt (incorrect password) for email: ${email}`
@@ -34,14 +35,11 @@ export const authUser = async ({ email, password }: AuthLoginFields) => {
     throw new Error("Verifique sus contraseña e intente de nuevo.");
   }
 
-  const session: AuthUser = {
-    userId: user.userId,
-    userEmail: user.userEmail,
-    userFullname: user.userFullname,
-  };
-
-  const payload = { user: session };
-  const token = generateAccessToken(payload);
-
-  return { token, user: session };
+  return user;
 };
+
+export const getUserByResetToken = (token: string) => {
+  return {};
+};
+
+export const setUserPassword = async (id: number, pasword: string) => {};

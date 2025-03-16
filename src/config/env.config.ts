@@ -56,7 +56,7 @@ const loadConfig = (): Config => {
       origins: getEnvVariable('APP_ORIGINS', 'http://localhost:5173')
     },
     jwt: {
-      accessKey: getEnvVariable('JWT_SECRET_KEY', 'default-access-key'),
+      accessKey: getEnvVariable('JWT_ACCESS_KEY', 'default-access-key'),
       refreshKey: getEnvVariable('JWT_REFRESH_KEY', 'default-refresh-key'),
       duration: getEnvVariable('JWT_SECRET_DURATIONN', '15m')
     },

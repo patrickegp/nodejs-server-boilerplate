@@ -1,11 +1,11 @@
 import { body } from "express-validator";
 
-export const validateLogin = [
+export const loginFormRules = [
   body('email').isEmail().withMessage('Correo electrónico inválido'),
   body('password').isLength({ min: 6 }).withMessage('Escriba al menos 6 caracteres.')
 ];
 
-export const validateRegister = [
+export const registerFormRules = [
   body('email')
     .isEmail()
     .withMessage('Correo electrónico inválido'),
@@ -20,3 +20,15 @@ export const validateRegister = [
     .withMessage('Formatos válidos, 0000000000 ó 000-000-0000')
 ];
 
+export const recoveryFormRules = [
+  body('email').isEmail().withMessage('Correo electrónico inválido'), 
+];
+
+export const resetPasswordFormRules = [
+  body('password')
+    .isLength({ min: 6 })
+    .withMessage('Escriba al menos 6 caracteres.'),
+  body('repeated')
+    .custom((value, { req }) => value === req.body.password)
+    .withMessage('Las contraseñas no coinciden.')
+];

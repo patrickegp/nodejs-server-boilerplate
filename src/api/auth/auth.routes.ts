@@ -1,15 +1,15 @@
-import { Router, Request, Response } from "express";
-import { validateLogin } from "./auth.requests";
-import { authLogin } from "./auth.controller";
-import { handleValidationErrors } from "../../middlewares/handle.validation.errors";
+import { Router } from "express";
+import { loginFormRules, recoveryFormRules, resetPasswordFormRules } from "./auth.validations";
+import { userLogin, recoverPassword, resetPassword, userRegistration } from "./auth.controller";
+import { validationErrors } from "../../middlewares/validation.errors";
 
 const router = Router();
 
-router.post('/register');
+router.post('/register', userRegistration);
 router.post('/refresh');
-router.post('/recover');
-router.post('/reset');
+router.post('/recover', recoveryFormRules, recoverPassword);
+router.post('/reset/:token', resetPasswordFormRules, resetPassword);
 router.post('/logout');
-router.post('/', validateLogin, handleValidationErrors, authLogin);
+router.post('/', loginFormRules, validationErrors, userLogin);
 
 export default router;
